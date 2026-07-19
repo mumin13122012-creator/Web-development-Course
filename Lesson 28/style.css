@@ -1,30 +1,25 @@
-body {
-    margin: 0;
-    font-family: "Baloo Tamma 2", sans-serif;
-    background: #fff;
+body{
+    background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: "roboto Slab", serif;
+}
+.about {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius:15px;
+    margin-top: 50px;
+}
+.m-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 20px 0;
 }
 
-/* Full width navbar */
-.navigation {
-    background: #222;
-    border-top: 2px solid #f2a900;
-    padding: 12px 40px !important;
+.btn-outline {
+    border: weight 2px;
+    font-weight: 600;
+    padding: 10px 30px;
+    transition: all 0.3s ease;
 }
-
-/* Logo */
-.brand-logo {
-    height: 26px;
-    width: auto;
-}
-
-/* Links */
-.navigation-link {
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    color: #fff !important;
-}
-
-.navigation-link:hover {
-    color: #f2a900 !important;
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    transform:scale(1.05);
 }
