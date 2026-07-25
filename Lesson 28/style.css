@@ -1,25 +1,38 @@
-body{
-    background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    font-family: "roboto Slab", serif;
-}
-.about {
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius:15px;
-    margin-top: 50px;
-}
-.m-heading {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 20px 0;
+/* style.css */
+
+/* section background like the image */
+#social-media{
+    background:#2f3550
 }
 
-.btn-outline {
-    border: weight 2px;
-    font-weight: 600;
-    padding: 10px 30px;
-    transition: all 0.3s ease;
+/* Heading style */
+.m-heading{
+    font-weight:700;
+    margin-top: 6px;
 }
-.btn-outline-warning:hover {
-    background-color: #ffc107;
-    transform:scale(1.05);
+
+/* Button Cards */
+.media_link{
+    border: 2px solid #f2a900;     /* yellow border */
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-right: 18px;
+    background: transparent;
+    text-align: left;
+}
+
+/* keep spacing like the screenshot */
+.row.pt-5{
+    gap: 18px;
+}
+
+/* text inside the buttons */
+.media_link h3{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Email button filled (already has been bg-warning in HTML) */
+.media_link.bg-warning{
+    border: 2px solid #f2a900;
 }
