@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Text Fixer Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            color: #1d3557;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row input {
+            flex: 1;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e63946;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #c62828;
+        }
+
+        .result {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #f1faee;
+            border-left: 4px solid #1d3557;
+            font-size: 14px;
+            color: #1d3557;
+            word-break: break-all;
+        }
+
+        .error-result {
+            background-color: #ffebee;
+            border-left: 4px solid #c62828;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>My Text Fixer Tool</h2>
+
+    <!-- 1. Check Data Type -->
+    <div class="section">
+        <label for="typeInput">1. Check Data Type (typeof):</label>
+        <input type="text" id="typeInput" placeholder="Enter text or number">
+        <button onclick="checkType()">Check Type</button>
+        <div id="typeResult" class="result" style="display:none;"></div>
+    </div>
+
+    <!-- 2. Type Conversion -->
+    <div class="section">
+        <label for="convertInput">2. Convert Values (Text ↔ Number):</label>
+        <input type="text" id="convertInput" placeholder="Enter number string e.g. 100">
+        <button onclick="convertValue()">Convert Value</button>
+        <div id="convertResult" class="result" style="display:none;"></div>
+    </div>
+
+    <!-- 3. Replace Text -->
+    <div class="section">
+        <label for="sentenceInput">3. Replace Text in Sentence:</label>
+        <input type="text" id="sentenceInput" value="I love coding in Python!">
+        <div class="row">
+            <input type="text" id="findWord" placeholder="Word to find">
+            <input type="text" id="replaceWord" placeholder="Replace with">
+        </div>
+        <button onclick="replaceText()">Replace Text</button>
+        <div id="replaceResult" class="result" style="display:none;"></div>
+    </div>
+
+    <!-- 4. Error Handling -->
+    <div class="section" style="border:none;">
+        <label>4. Error Handling (try / catch):</label>
+        <button onclick="triggerError()">Test Safe Error Handler</button>
+        <div id="errorResult" class="result error-result" style="display:none;"></div>
+    </div>
+</div>
+
+<script>
+    // 1. Check Data Type using typeof
+    function checkType() {
+        const value = document.getElementById('typeInput').value;
+        const resultDiv = document.getElementById('typeResult');
+
+        if (value === '') {
+            resultDiv.textContent = "Data Type: undefined / empty string";
+        } else if (!isNaN(value)) {
+            resultDiv.textContent = `Input is convertible to Number. typeof raw input is: '${typeof value}' (String)`;
+        } else {
+            resultDiv.textContent = `Input: "${value}" | typeof: ${typeof value}`;
+        }
+        resultDiv.style.display = 'block';
+    }
+
+    // 2. Convert text into numbers and numbers into text
+    function convertValue() {
+        const input = document.getElementById('convertInput').value;
+        const resultDiv = document.getElementById('convertResult');
+
+        const numVal = Number(input);
+        if (isNaN(numVal)) {
+            resultDiv.textContent = `Cannot convert "${input}" to a Number.`;
+        } else {
+            const strVal = numVal.toString();
+            resultDiv.textContent = `Converted to Number: ${numVal} (typeof: ${typeof numVal}) | Converted back to String: "${strVal}" (typeof: ${typeof strVal})`;
+        }
+        resultDiv.style.display = 'block';
+    }
+
+    // 3. Search for and replace text in a sentence
+    function replaceText() {
+        const sentence = document.getElementById('sentenceInput').value;
+        const find = document.getElementById('findWord').value;
+        const replace = document.getElementById('replaceWord').value;
+        const resultDiv = document.getElementById('replaceResult');
+
+        if (!find) {
+            resultDiv.textContent = "Please enter a word to find.";
+        } else {
+            const updatedSentence = sentence.replace(new RegExp(find, 'gi'), replace);
+            resultDiv.textContent = `Result: "${updatedSentence}"`;
+        }
+        resultDiv.style.display = 'block';
+    }
+
+    // 4. Safely handle an error using try/catch
+    function triggerError() {
+        const resultDiv = document.getElementById('errorResult');
+        try {
+            // Intentionally calling an undefined function to throw an error
+            nonExistentFunction();
+        } catch (error) {
+            resultDiv.textContent = `Caught Error safely: ${error.message}`;
+            resultDiv.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
