@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank App - Income & Expense Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .balance-card {
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .balance-card h3 {
+            margin: 0;
+            color: #1b5e20;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .btn-income {
+            background-color: #2e7d32;
+        }
+        .btn-income:hover {
+            background-color: #1b5e20;
+        }
+        .btn-expense {
+            background-color: #c62828;
+        }
+        .btn-expense:hover {
+            background-color: #b71c1c;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+        .message.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+            display: block;
+        }
+        .message.error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bank App</h2>
+    
+    <div class="balance-card">
+        Current Balance: <h3 id="balanceDisplay">$1000.00</h3>
+    </div>
+
+    <div class="form-group">
+        <label for="incomeInput">Add Income ($):</label>
+        <input type="number" id="incomeInput" placeholder="Enter amount" step="0.01">
+        <button class="btn-income" onclick="addIncome()">Add Income</button>
+    </div>
+
+    <div class="form-group">
+        <label for="expenseInput">Deduct Expense ($):</label>
+        <input type="number" id="expenseInput" placeholder="Enter amount" step="0.01">
+        <button class="btn-expense" onclick="deductExpense()">Deduct Expense</button>
+    </div>
+
+    <div id="messageBox" class="message"></div>
+</div>
+
+<script>
+    let currentBalance = 1000.00;
+
+    function updateBalanceDisplay() {
+        document.getElementById('balanceDisplay').textContent = `$${currentBalance.toFixed(2)}`;
+    }
+
+    function showMessage(text, isError) {
+        const msgBox = document.getElementById('messageBox');
+        msgBox.textContent = text;
+        msgBox.className = 'message ' + (isError ? 'error' : 'success');
+    }
+
+    function addIncome() {
+        const incomeInput = document.getElementById('incomeInput').value;
+        const amount = parseFloat(incomeInput);
+
+        if (incomeInput === '' || isNaN(amount)) {
+            showMessage('Error: Please enter a valid numerical amount.', true);
+        } else if (amount <= 0) {
+            showMessage('Error: Income must be greater than zero.', true);
+        } else {
+            currentBalance += amount;
+            updateBalanceDisplay();
+            showMessage(`Successfully added $${amount.toFixed(2)}!`, false);
+            document.getElementById('incomeInput').value = '';
+        }
+    }
+
+    function deductExpense() {
+        const expenseInput = document.getElementById('expenseInput').value;
+        const amount = parseFloat(expenseInput);
+
+        if (expenseInput === '' || isNaN(amount)) {
+            showMessage('Error: Please enter a valid numerical amount.', true);
+        } else if (amount <= 0) {
+            showMessage('Error: Expense must be greater than zero.', true);
+        } else if (amount > currentBalance) {
+            showMessage(`Error: Insufficient funds! Expense ($${amount.toFixed(2)}) exceeds balance ($${currentBalance.toFixed(2)}).`, true);
+        } else {
+            currentBalance -= amount;
+            updateBalanceDisplay();
+            showMessage(`Successfully deducted $${amount.toFixed(2)}!`, false);
+            document.getElementById('expenseInput').value = '';
+        }
+    }
+</script>
+
+</body>
+</html>
