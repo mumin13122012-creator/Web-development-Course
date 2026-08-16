@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Event Data Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            color: #1d3557;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #e63946;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #c62828;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            color: #457b9d;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #666;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .details-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f1faee;
+            border-left: 5px solid #1d3557;
+            border-radius: 4px;
+        }
+
+        .details-box p {
+            margin: 6px 0;
+            color: #1d3557;
+            font-size: 15px;
+        }
+
+        .details-box strong {
+            color: #e63946;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>School Event Data Viewer</h2>
+    <button onclick="fetchEventData()">Load Event Data</button>
+
+    <div id="loading" class="loading">⏳ Fetching data from server (Simulated)...</div>
+
+    <div id="content" style="display: none;">
+        <div class="section-title">1. JSON String (Converted using JSON.stringify):</div>
+        <pre id="jsonStringDisplay"></pre>
+
+        <div class="section-title">2. Parsed JavaScript Object Details:</div>
+        <div id="eventDetails" class="details-box" style="display: block;">
+            <p><strong>Event Name:</strong> <span id="eventName"></span></p>
+            <p><strong>Date:</strong> <span id="eventDate"></span></p>
+            <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+            <p><strong>Attendees:</strong> <span id="eventAttendees"></span> students</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function fetchEventData() {
+        // Show loading message
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('content').style.display = 'none';
+
+        // 1. Create a JavaScript Object for School Event Details
+        const originalEventData = {
+            eventName: "Annual Science & Tech Fair",
+            date: "August 25, 2026",
+            location: "Main Auditorium",
+            attendees: 250
+        };
+
+        // Asynchronous simulation using setTimeout (2 seconds delay)
+        setTimeout(() => {
+            // 2. Convert JavaScript Object to JSON text using JSON.stringify()
+            const jsonText = JSON.stringify(originalEventData, null, 2);
+
+            // 3. Convert JSON text back into JavaScript Object using JSON.parse()
+            const parsedDataObject = JSON.parse(jsonText);
+
+            // Hide loading indicator
+            document.getElementById('loading').style.display = 'none';
+
+            // Display JSON String in DOM
+            document.getElementById('jsonStringDisplay').textContent = jsonText;
+
+            // Display Parsed Object Details in DOM
+            document.getElementById('eventName').textContent = parsedDataObject.eventName;
+            document.getElementById('eventDate').textContent = parsedDataObject.date;
+            document.getElementById('eventLocation').textContent = parsedDataObject.location;
+            document.getElementById('eventAttendees').textContent = parsedDataObject.attendees;
+
+            // Reveal Content Box
+            document.getElementById('content').style.display = 'block';
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
