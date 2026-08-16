@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1d3557;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1d3557;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #c62828;
+        }
+
+        .error-message {
+            color: #c62828;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        #passCard {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f1faee;
+            border: 2px dashed #457b9d;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #passCard h3 {
+            color: #1d3557;
+            margin-bottom: 10px;
+        }
+
+        #passCard p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .pass-id {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 12px;
+            background-color: #1d3557;
+            color: #ffffff;
+            font-weight: bold;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+            color: #457b9d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Event Registration</h2>
+    
+    <form id="registrationForm" onsubmit="handleRegister(event)">
+        <!-- Full Name -->
+        <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter full name" minlength="3" required>
+            <div id="nameError" class="error-message">Name must be at least 3 characters long.</div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter email" required>
+            <div id="emailError" class="error-message">Please enter a valid email address.</div>
+        </div>
+
+        <!-- Age -->
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" min="10" max="100" placeholder="Enter age" required>
+            <div id="ageError" class="error-message">Age must be between 10 and 100.</div>
+        </div>
+
+        <!-- Event Selection -->
+        <div class="form-group">
+            <label for="eventSelect">Select Event</label>
+            <select id="eventSelect" required>
+                <option value="">-- Choose an Event --</option>
+                <option value="Coding Workshop">Coding Workshop</option>
+                <option value="Science Fair">Science Fair</option>
+                <option value="Gaming Tournament">Gaming Tournament</option>
+            </select>
+            <div id="eventError" class="error-message">Please select an event.</div>
+        </div>
+
+        <button type="submit">Register Now</button>
+    </form>
+
+    <div id="loading" class="loading">Generating Event Pass...</div>
+
+    <!-- Event Pass Display -->
+    <div id="passCard">
+        <h3>🎉 Registration Successful!</h3>
+        <p><strong>Name:</strong> <span id="passName"></span></p>
+        <p><strong>Event:</strong> <span id="passEvent"></span></p>
+        <p><strong>Pass Code:</strong></p>
+        <span class="pass-id" id="passCode"></span>
+    </div>
+</div>
+
+<script>
+    function handleRegister(event) {
+        event.preventDefault();
+
+        // Access DOM elements and values
+        const name = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const age = parseInt(document.getElementById('age').value);
+        const eventChoice = document.getElementById('eventSelect').value;
+
+        // Reset Error Messages
+        document.getElementById('nameError').style.display = 'none';
+        document.getElementById('emailError').style.display = 'none';
+        document.getElementById('ageError').style.display = 'none';
+        document.getElementById('eventError').style.display = 'none';
+
+        let isValid = true;
+
+        // Validations
+        if (name.length < 3) {
+            document.getElementById('nameError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (isNaN(age) || age < 10 || age > 100) {
+            document.getElementById('ageError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (eventChoice === "") {
+            document.getElementById('eventError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (isValid) {
+            // Show loading message
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('passCard').style.display = 'none';
+
+            // Simulate delay for generating event pass
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+
+                // Generate random Pass Code
+                const randomPassCode = "PASS-" + Math.floor(100000 + Math.random() * 900000);
+
+                // Update DOM with user details
+                document.getElementById('passName').textContent = name;
+                document.getElementById('passEvent').textContent = eventChoice;
+                document.getElementById('passCode').textContent = randomPassCode;
+
+                // Show Event Pass
+                document.getElementById('passCard').style.display = 'block';
+
+                // Reset Form
+                document.getElementById('registrationForm').reset();
+            }, 1500);
+        }
+    }
+</script>
+
+</body>
+</html>
