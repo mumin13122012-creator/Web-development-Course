@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reel-O-Gram I</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="app-header">
+      <h1>Reel-O-Gram</h1>
+    </header>
+
+    <!-- Video Display Area -->
+    <div class="video-container">
+      <video id="videoPreview" autoplay playsinline muted></video>
+      <div id="timer" class="timer-display">10s</div>
+    </div>
+
+    <!-- UI Controls -->
+    <div class="controls-container">
+      <button id="recordBtn" class="btn record-btn">Record</button>
+      <button id="stopBtn" class="btn stop-btn" disabled>Stop</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
