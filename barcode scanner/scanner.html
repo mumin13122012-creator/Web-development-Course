@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quizzer App - Barcode Scanner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen active">
+      <h1>Barcode Quizzer</h1>
+      <p>Test your knowledge about Barcode technology!</p>
+      <button id="startBtn" class="btn">Start Quiz</button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quizScreen" class="screen">
+      <div class="quiz-header">
+        <span id="questionNum">Question 1/3</span>
+      </div>
+      <h2 id="questionText">Question goes here?</h2>
+      <div id="optionsContainer" class="options-grid">
+        <!-- Options generated dynamically -->
+      </div>
+    </div>
+
+    <!-- Final Screen -->
+    <div id="finalScreen" class="screen">
+      <h1>Quiz Completed!</h1>
+      <p class="final-msg">Thank you for completing the Barcode quiz.</p>
+      <div id="scoreText" class="score-display">Your Score: 0/3</div>
+      <button id="restartBtn" class="btn">Play Again</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
