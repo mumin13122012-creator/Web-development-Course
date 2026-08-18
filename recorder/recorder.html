@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recorder-Cody | Audio Recording App</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --primary-color: #6c5ce7;
+      --accent-color: #ff7675;
+      --success-color: #00b894;
+      --text-color: #2d3436;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .phone-container {
+      width: 380px;
+      height: 680px;
+      background-color: var(--card-bg);
+      border-radius: 36px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      padding: 30px 24px;
+      text-align: center;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Screen Navigation Bar */
+    .nav-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    /* App Header */
+    .app-title {
+      font-size: 1.6rem;
+      color: var(--primary-color);
+      font-weight: 800;
+    }
+
+    .mascot-img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 4px solid var(--primary-color);
+      object-fit: cover;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Visualizer Box */
+    .visualizer-box {
+      width: 100%;
+      height: 90px;
+      background: #000;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 0 10px;
+    }
+
+    .bar {
+      width: 8px;
+      height: 15px;
+      background-color: #00cec9;
+      border-radius: 4px;
+      transition: height 0.1s ease;
+    }
+
+    /* Status Display */
+    .status-badge {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: var(--text-color);
+    }
+
+    .timer {
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: var(--primary-color);
+    }
+
+    /* Button Controls */
+    .control-panel {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .action-btn {
+      border: none;
+      padding: 14px 24px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    .action-btn:active {
+      transform: scale(0.95);
+    }
+
+    .record-btn { background-color: var(--accent-color); }
+    .stop-btn { background-color: #6c5ce7; }
+    .play-btn { background-color: var(--success-color); }
+
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Customization Settings */
+    .settings-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      text-align: left;
+    }
+
+    .settings-group label {
+      font-weight: bold;
+      color: var(--text-color);
+      font-size: 0.9rem;
+    }
+
+    .settings-group input, .settings-group select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+    }
+
+    /* Recording History List */
+    .recordings-list {
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .recording-card {
+      background: #f1f2f6;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-container">
+
+    <!-- SCREEN 1: RECORDER SCREEN -->
+    <div id="recorderScreen" class="screen active">
+      <div class="nav-bar">
+        <span class="app-title" id="displayLabel">Recorder-Cody</span>
+        <button class="nav-btn" id="toSettingsBtn">Customize ⚙️</button>
+      </div>
+
+      <img id="displayAvatar" src="https://via.placeholder.com/130/6c5ce7/ffffff?text=Cody" alt="Mascot Avatar" class="mascot-img">
+
+      <div class="visualizer-box" id="visualizer">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div>
+      </div>
+
+      <div>
+        <div id="statusBadge" class="status-badge">Ready to Record</div>
+        <div id="timerDisplay" class="timer">00:00</div>
+      </div>
+
+      <div class="control-panel">
+        <button id="recordBtn" class="action-btn record-btn">Record</button>
+        <button id="stopBtn" class="action-btn stop-btn" disabled>Stop</button>
+        <button id="playBtn" class="action-btn play-btn" disabled>Play</button>
+      </div>
+
+      <audio id="audioPlayback" controls style="display: none;"></audio>
+    </div>
+
+    <!-- SCREEN 2: CUSTOMIZATION & SETTINGS -->
+    <div id="settingsScreen" class="screen">
+      <div class="nav-bar">
+        <span class="app-title">Settings</span>
+        <button class="nav-btn" id="toRecorderBtn">Back 🎙️</button>
+      </div>
+
+      <div class="settings-group">
+        <div>
+          <label for="appLabelInput">Custom App Label:</label>
+          <input type="text" id="appLabelInput" value="Recorder-Cody">
+        </div>
+
+        <div>
+          <label for="themeSelect">Theme Color:</label>
+          <select id="themeSelect">
+            <option value="purple">Purple Modern</option>
+            <option value="ocean">Ocean Blue</option>
+            <option value="sunset">Sunset Orange</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="avatarUrlInput">Custom Avatar Image URL:</label>
+          <input type="text" id="avatarUrlInput" placeholder="https://example.com/image.jpg">
+        </div>
+      </div>
+
+      <div class="recordings-list" id="recordingsList">
+        <!-- Recorded Audio Items Dynamic Injection -->
+      </div>
+
+      <button id="saveSettingsBtn" class="action-btn stop-btn" style="width: 100%;">Save & Apply</button>
+    </div>
+
+  </div>
+
+  <script>
+    // State & DOM Elements
+    const recorderScreen = document.getElementById('recorderScreen');
+    const settingsScreen = document.getElementById('settingsScreen');
+    const toSettingsBtn = document.getElementById('toSettingsBtn');
+    const toRecorderBtn = document.getElementById('toRecorderBtn');
+
+    const recordBtn = document.getElementById('recordBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const playBtn = document.getElementById('playBtn');
+    const statusBadge = document.getElementById('statusBadge');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const audioPlayback = document.getElementById('audioPlayback');
+    const visualizerBars = document.querySelectorAll('.bar');
+
+    const displayLabel = document.getElementById('displayLabel');
+    const displayAvatar = document.getElementById('displayAvatar');
+    const appLabelInput = document.getElementById('appLabelInput');
+    const themeSelect = document.getElementById('themeSelect');
+    const avatarUrlInput = document.getElementById('avatarUrlInput');
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let audioBlob;
+    let audioUrl;
+    let timerInterval;
+    let visualizerInterval;
+    let seconds = 0;
+
+    // Navigation Switchers
+    toSettingsBtn.addEventListener('click', () => {
+      recorderScreen.classList.remove('active');
+      settingsScreen.classList.add('active');
+    });
+
+    toRecorderBtn.addEventListener('click', () => {
+      settingsScreen.classList.remove('active');
+      recorderScreen.classList.add('active');
+    });
+
+    // Audio Recording Handler
+    recordBtn.addEventListener('click', async () => {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+          mediaRecorder.onstop = () => {
+            audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+            audioUrl = URL.createObjectURL(audioBlob);
+            audioPlayback.src = audioUrl;
+            playBtn.disabled = false;
+          };
+
+          mediaRecorder.start();
+          startTimer();
+          startVisualizer();
+
+          recordBtn.disabled = true;
+          stopBtn.disabled = false;
+          playBtn.disabled = true;
+          statusBadge.textContent = "Recording...";
+          statusBadge.style.color = "#ff7675";
+        } catch (err) {
+          alert("Microphone permission required to record audio.");
+        }
+      }
+    });
+
+    stopBtn.addEventListener('click', () => {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      }
+      stopTimer();
+      stopVisualizer();
+
+      recordBtn.disabled = false;
+      stopBtn.disabled = true;
+      statusBadge.textContent = "Recording Saved!";
+      statusBadge.style.color = "#00b894";
+    });
+
+    playBtn.addEventListener('click', () => {
+      if (audioUrl) {
+        audioPlayback.style.display = "block";
+        audioPlayback.play();
+        statusBadge.textContent = "Playing Audio...";
+      }
+    });
+
+    // Timer Logic
+    function startTimer() {
+      seconds = 0;
+      timerDisplay.textContent = "00:00";
+      timerInterval = setInterval(() => {
+        seconds++;
+        const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
+        timerDisplay.textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    // Audio Visualizer Simulation
+    function startVisualizer() {
+      visualizerInterval = setInterval(() => {
+        visualizerBars.forEach(bar => {
+          const randomHeight = Math.floor(Math.random() * 60) + 15;
+          bar.style.height = `${randomHeight}px`;
+        });
+      }, 150);
+    }
+
+    function stopVisualizer() {
+      clearInterval(visualizerInterval);
+      visualizerBars.forEach(bar => bar.style.height = '15px');
+    }
+
+    // Settings Customization Handler
+    saveSettingsBtn.addEventListener('click', () => {
+      if (appLabelInput.value.trim() !== "") {
+        displayLabel.textContent = appLabelInput.value;
+      }
+
+      if (avatarUrlInput.value.trim() !== "") {
+        displayAvatar.src = avatarUrlInput.value;
+      }
+
+      // Theme Application
+      const selectedTheme = themeSelect.value;
+      if (selectedTheme === "ocean") {
+        document.documentElement.style.setProperty('--primary-color', '#0984e3');
+        document.documentElement.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)');
+      } else if (selectedTheme === "sunset") {
+        document.documentElement.style.setProperty('--primary-color', '#e17055');
+        document.documentElement.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #fab1a0 0%, #e17055 100%)');
+      } else {
+        document.documentElement.style.setProperty('--primary-color', '#6c5ce7');
+        document.documentElement.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+      }
+
+      alert("Settings updated successfully!");
+    });
+  </script>
+</body>
+</html>
